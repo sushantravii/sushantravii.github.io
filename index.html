@@ -585,20 +585,91 @@
   .reveal-delay-3 { transition-delay: .32s; }
   .reveal-delay-4 { transition-delay: .44s; }
 
-  /* ─── RESPONSIVE ─────────────────────────────────── */
+  /* ─── RESPONSIVE — TABLET ───────────────────────── */
   @media (max-width: 900px) {
-    nav { padding: 20px 24px; }
-    .nav-links { gap: 24px; }
-    section { padding: 100px 24px; }
+    nav { padding: 20px 28px; }
+    .nav-links { gap: 28px; }
+    section { padding: 100px 28px; }
     #about { grid-template-columns: 1fr; gap: 48px; }
     .projects-grid { grid-template-columns: 1fr; }
     .project-card.tall { grid-row: span 1; aspect-ratio: 16/10; }
-    footer { padding: 20px 24px; flex-direction: column; gap: 8px; }
+    footer { padding: 20px 28px; flex-direction: column; gap: 6px; text-align: center; }
     .hero-scroll { display: none; }
+    .contact-socials { gap: 28px; flex-wrap: wrap; justify-content: center; }
   }
+
+  /* ─── RESPONSIVE — MOBILE ────────────────────────── */
   @media (max-width: 600px) {
+    /* disable custom cursor on touch */
+    #cursor, #cursor-ring { display: none; }
+    body { cursor: auto; font-size: 16px; }
+
+    /* nav */
+    nav { padding: 18px 20px; }
+    .nav-logo { font-size: 9px; letter-spacing: 0.1em; }
     .nav-links { display: none; }
-    .hero-title { font-size: clamp(48px, 13vw, 90px); }
+
+    /* sections */
+    section { padding: 88px 20px 64px; min-height: auto; }
+
+    /* hero */
+    #hero { min-height: 100svh; padding-bottom: 60px; justify-content: flex-end; }
+    .hero-eyebrow { font-size: 9px; letter-spacing: 0.2em; margin-bottom: 20px; }
+    .hero-title {
+      font-size: clamp(42px, 11vw, 64px);
+      line-height: 1.0;
+      margin-bottom: 28px;
+      letter-spacing: -0.01em;
+    }
+    .hero-sub { font-size: 14px; line-height: 1.75; max-width: 100%; }
+
+    /* about */
+    #about { padding-top: 88px; gap: 40px; }
+    .about-heading { font-size: clamp(28px, 8vw, 44px); margin-bottom: 24px; }
+    .about-body { font-size: 15px; }
+    .about-right { padding: 4px 20px; }
+    .stat-num { font-size: 36px; }
+    .stat-label { font-size: 9px; }
+    .stat-row { padding: 18px 0; }
+
+    /* section labels */
+    .section-label { font-size: 9px; margin-bottom: 40px; }
+
+    /* projects */
+    #projects { padding-top: 88px; }
+    .projects-grid { grid-template-columns: 1fr; gap: 2px; }
+    .project-card { aspect-ratio: 4/3; }
+    .project-overlay { opacity: 1; }
+    .project-name { font-size: 20px; }
+    .project-tag { font-size: 8px; }
+
+    /* gears */
+    #gears { padding-top: 88px; }
+    .gears-intro { font-size: 15px; margin-bottom: 48px; }
+    .gear-list { grid-template-columns: 1fr 1fr; gap: 2px; }
+    .gear-item { padding: 16px 14px; }
+    .gear-name { font-size: 14px; }
+    .gear-desc { font-size: 9px; }
+    .gear-cat-title { font-size: 9px; margin-bottom: 16px; }
+    .gear-category { margin-bottom: 40px; }
+
+    /* contact */
+    #contact { padding-top: 80px; }
+    .contact-big { font-size: clamp(36px, 10vw, 60px); margin-bottom: 28px; }
+    .contact-sub { font-size: 14px; margin-bottom: 32px; }
+    .contact-email { font-size: 10px; letter-spacing: 0.08em; margin-bottom: 44px; word-break: break-all; }
+    .contact-socials { gap: 20px; flex-wrap: wrap; }
+    .contact-divider { height: 48px; margin-bottom: 36px; }
+
+    /* footer */
+    footer { padding: 20px; flex-direction: column; gap: 6px; text-align: center; }
+    footer span { font-size: 9px; }
+  }
+
+  /* ─── VERY SMALL PHONES ──────────────────────────── */
+  @media (max-width: 390px) {
+    .hero-title { font-size: clamp(36px, 10vw, 52px); }
+    .gear-list { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -825,31 +896,35 @@ document.querySelectorAll('section[id]').forEach(s => {
   }, { threshold: 0.35 }).observe(s);
 });
 
-/* ── HERO PARALLAX ───────────────────────────────── */
+/* ── HERO PARALLAX (desktop only) ───────────────── */
 const heroContent = document.querySelector('.hero-content');
 const heroBg      = document.querySelector('.hero-bg');
-window.addEventListener('scroll', () => {
-  const s = window.scrollY;
-  if (s < window.innerHeight) {
-    heroContent.style.transform = `translateY(${s * 0.22}px)`;
-    heroBg.style.transform      = `translateY(${s * 0.08}px)`;
-  }
-}, { passive: true });
+if (window.matchMedia('(min-width: 600px) and (hover: hover)').matches) {
+  window.addEventListener('scroll', () => {
+    const s = window.scrollY;
+    if (s < window.innerHeight) {
+      heroContent.style.transform = `translateY(${s * 0.22}px)`;
+      heroBg.style.transform      = `translateY(${s * 0.08}px)`;
+    }
+  }, { passive: true });
+}
 
-/* ── PROJECT CARD 3D TILT ────────────────────────── */
-document.querySelectorAll('.project-card').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const r = card.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width  - 0.5;
-    const y = (e.clientY - r.top)  / r.height - 0.5;
-    card.style.transition = 'transform .08s linear';
-    card.style.transform  = `perspective(900px) rotateY(${x * 5}deg) rotateX(${-y * 5}deg)`;
+/* ── PROJECT CARD 3D TILT (desktop only) ─────────── */
+if (window.matchMedia('(hover: hover)').matches) {
+  document.querySelectorAll('.project-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width  - 0.5;
+      const y = (e.clientY - r.top)  / r.height - 0.5;
+      card.style.transition = 'transform .08s linear';
+      card.style.transform  = `perspective(900px) rotateY(${x * 5}deg) rotateX(${-y * 5}deg)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transition = 'transform .7s cubic-bezier(0.16, 1, 0.3, 1)';
+      card.style.transform  = 'perspective(900px) rotateY(0deg) rotateX(0deg)';
+    });
   });
-  card.addEventListener('mouseleave', () => {
-    card.style.transition = 'transform .7s cubic-bezier(0.16, 1, 0.3, 1)';
-    card.style.transform  = 'perspective(900px) rotateY(0deg) rotateX(0deg)';
-  });
-});
+}
 
 
 </script>
