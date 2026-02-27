@@ -666,7 +666,219 @@
     footer span { font-size: 9px; }
   }
 
-  /* ─── VERY SMALL PHONES ──────────────────────────── */
+  /* ─── PHOTOS / UNSPLASH GALLERY ─────────────────── */
+  #photos { min-height: auto; padding-bottom: 100px; }
+
+  .gallery-intro {
+    max-width: 500px;
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1.8;
+    font-style: italic;
+    margin-bottom: 16px;
+  }
+  .gallery-unsplash-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    text-decoration: none;
+    margin-bottom: 64px;
+    transition: color .3s;
+  }
+  .gallery-unsplash-link:hover { color: var(--gold-light); }
+  .gallery-unsplash-link::before {
+    content: '';
+    width: 20px; height: 1px;
+    background: var(--gold-dim);
+    transition: width .3s var(--ease-out), background .3s;
+  }
+  .gallery-unsplash-link:hover::before { width: 32px; background: var(--gold-light); }
+
+  /* masonry-style grid */
+  .gallery-grid {
+    columns: 3;
+    column-gap: 3px;
+  }
+  .gallery-item {
+    break-inside: avoid;
+    margin-bottom: 3px;
+    position: relative;
+    overflow: hidden;
+    display: block;
+    cursor: none;
+  }
+  .gallery-item img {
+    width: 100%;
+    display: block;
+    transition: transform .8s var(--ease-out), filter .4s;
+    filter: grayscale(20%) brightness(0.92);
+  }
+  .gallery-item:hover img {
+    transform: scale(1.04);
+    filter: grayscale(0%) brightness(1);
+  }
+  /* gold shimmer overlay on hover */
+  .gallery-item::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top,
+      rgba(0,0,0,0.7) 0%,
+      transparent 50%
+    );
+    opacity: 0;
+    transition: opacity .4s var(--ease-out);
+  }
+  .gallery-item:hover::after { opacity: 1; }
+
+  .gallery-item-meta {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 20px 18px 16px;
+    z-index: 2;
+    transform: translateY(8px);
+    opacity: 0;
+    transition: opacity .4s var(--ease-out), transform .4s var(--ease-out);
+  }
+  .gallery-item:hover .gallery-item-meta {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .gallery-item-likes {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .gallery-item-desc {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-style: italic;
+    color: rgba(244,242,236,0.7);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* gold border flash */
+  .gallery-item::before {
+    content: '';
+    position: absolute; inset: 0;
+    border: 1px solid rgba(201,168,76,0);
+    z-index: 3;
+    transition: border-color .4s;
+    pointer-events: none;
+  }
+  .gallery-item:hover::before { border-color: rgba(201,168,76,0.25); }
+
+  /* loading skeleton */
+  .gallery-skeleton {
+    columns: 3;
+    column-gap: 3px;
+  }
+  .gallery-skeleton-item {
+    break-inside: avoid;
+    margin-bottom: 3px;
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+  }
+  .gallery-skeleton-item::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(201,168,76,0.04) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.8s ease-in-out infinite;
+  }
+  @keyframes skeletonShimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
+  }
+
+  .gallery-error {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-align: center;
+    padding: 60px 0;
+    display: none;
+  }
+  .gallery-error a {
+    color: var(--gold-dim);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(201,168,76,0.3);
+  }
+
+  /* lightbox */
+  #lightbox {
+    position: fixed; inset: 0;
+    z-index: 800;
+    background: rgba(8,8,8,0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .4s var(--ease-out);
+  }
+  #lightbox.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  #lightbox img {
+    max-width: 88vw;
+    max-height: 88vh;
+    object-fit: contain;
+    border: 1px solid rgba(201,168,76,0.1);
+    box-shadow: 0 40px 120px rgba(0,0,0,0.8);
+    transform: scale(0.96);
+    transition: transform .5s var(--ease-out);
+  }
+  #lightbox.open img { transform: scale(1); }
+  #lightbox-close {
+    position: absolute; top: 32px; right: 40px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: none;
+    background: none; border: none;
+    transition: color .3s;
+  }
+  #lightbox-close:hover { color: var(--gold-light); }
+  #lightbox-caption {
+    position: absolute; bottom: 32px; left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* gallery mobile */
+  @media (max-width: 900px) {
+    .gallery-grid, .gallery-skeleton { columns: 2; }
+  }
+  @media (max-width: 500px) {
+    .gallery-grid, .gallery-skeleton { columns: 2; column-gap: 2px; }
+    .gallery-skeleton-item, .gallery-item { margin-bottom: 2px; }
+    #lightbox img { max-width: 96vw; max-height: 80vh; }
+    #lightbox-close { top: 20px; right: 20px; }
+  }
   @media (max-width: 390px) {
     .hero-title { font-size: clamp(36px, 10vw, 52px); }
     .gear-list { grid-template-columns: 1fr; }
@@ -685,6 +897,7 @@
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#projects">Work</a></li>
+    <li><a href="#photos">Photos</a></li>
     <li><a href="#gears">Gears</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
@@ -829,7 +1042,44 @@
   </div>
 </section>
 
-<!-- ── CONTACT ────────────────────────────────────── -->
+<!-- ── PHOTOS ──────────────────────────────────────── -->
+<section id="photos">
+  <div class="section-label reveal">Through the Lens</div>
+  <p class="gallery-intro reveal reveal-delay-1">
+    Stills from the world as I see it — light, texture, and the quiet between moments.
+  </p>
+  <a href="https://unsplash.com/@sushant_ravii" target="_blank" rel="noopener" class="gallery-unsplash-link reveal reveal-delay-2">
+    View full collection on Unsplash
+  </a>
+
+  <!-- skeleton shown while loading -->
+  <div class="gallery-skeleton" id="gallerySkeleton">
+    <div class="gallery-skeleton-item" style="padding-bottom:133%"></div>
+    <div class="gallery-skeleton-item" style="padding-bottom:75%"></div>
+    <div class="gallery-skeleton-item" style="padding-bottom:100%"></div>
+    <div class="gallery-skeleton-item" style="padding-bottom:75%"></div>
+    <div class="gallery-skeleton-item" style="padding-bottom:133%"></div>
+    <div class="gallery-skeleton-item" style="padding-bottom:100%"></div>
+  </div>
+
+  <div class="gallery-grid" id="galleryGrid" style="display:none"></div>
+
+  <div class="gallery-error" id="galleryError">
+    Couldn't load photos automatically —
+    <a href="https://unsplash.com/@sushant_ravii" target="_blank" rel="noopener">view them on Unsplash</a>
+    &nbsp;·&nbsp;
+    Add your <a href="#" id="apiKeyLink">Unsplash API key</a> to enable live loading.
+  </div>
+</section>
+
+<!-- ── LIGHTBOX ────────────────────────────────────── -->
+<div id="lightbox">
+  <button id="lightbox-close">✕ &nbsp;Close</button>
+  <img id="lightbox-img" src="" alt="">
+  <div id="lightbox-caption"></div>
+</div>
+
+
 <section id="contact">
   <div class="contact-divider reveal"></div>
   <h2 class="contact-big reveal">Let's make<br><em>something.</em></h2>
@@ -927,6 +1177,90 @@ if (window.matchMedia('(hover: hover)').matches) {
 }
 
 
-</script>
+/* ── UNSPLASH GALLERY ────────────────────────────── */
+(function() {
+  // ⬇ PASTE YOUR UNSPLASH ACCESS KEY HERE
+  const ACCESS_KEY = '8dH2NUdJQkVjxYbHczR_Czm5vxZ_N-omXwnzc7a1bSk';
+  const USERNAME   = 'sushant_ravii';
+  const PER_PAGE   = 20;
+
+  const grid     = document.getElementById('galleryGrid');
+  const skeleton = document.getElementById('gallerySkeleton');
+  const errBox   = document.getElementById('galleryError');
+  const lightbox = document.getElementById('lightbox');
+  const lbImg    = document.getElementById('lightbox-img');
+  const lbCap    = document.getElementById('lightbox-caption');
+  const lbClose  = document.getElementById('lightbox-close');
+
+  if (ACCESS_KEY === 'YOUR_UNSPLASH_ACCESS_KEY') {
+    skeleton.style.display = 'none';
+    errBox.style.display   = 'block';
+    return;
+  }
+
+  fetch(`https://api.unsplash.com/users/${USERNAME}/photos?per_page=${PER_PAGE}&order_by=latest`, {
+    headers: { Authorization: `Client-ID ${ACCESS_KEY}` }
+  })
+  .then(r => r.ok ? r.json() : Promise.reject(r.status))
+  .then(photos => {
+    skeleton.style.display = 'none';
+    grid.style.display     = '';
+
+    photos.forEach((photo, i) => {
+      const a = document.createElement('a');
+      a.className = 'gallery-item reveal';
+      if (i % 5 === 1) a.style.transitionDelay = '0.08s';
+      if (i % 5 === 2) a.style.transitionDelay = '0.16s';
+      a.href = photo.links.html + '?utm_source=sushant_ravii_portfolio&utm_medium=referral';
+      a.target = '_blank';
+      a.rel = 'noopener';
+
+      const img = document.createElement('img');
+      // use regular size (1080px wide) for quality, lazy load
+      img.src     = photo.urls.regular;
+      img.alt     = photo.alt_description || photo.description || 'Photo by Sushant Ravitchandirane';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+
+      const meta = document.createElement('div');
+      meta.className = 'gallery-item-meta';
+      const likes = photo.likes > 0
+        ? `<div class="gallery-item-likes">♥ ${photo.likes.toLocaleString()}</div>` : '';
+      const desc  = photo.description || photo.alt_description || '';
+      meta.innerHTML = likes + (desc ? `<div class="gallery-item-desc">${desc}</div>` : '');
+
+      a.appendChild(img);
+      a.appendChild(meta);
+      grid.appendChild(a);
+
+      // intercept click → lightbox instead of new tab
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        lbImg.src = photo.urls.full;
+        lbCap.textContent = (photo.description || photo.alt_description || '').slice(0, 60) || 'Sushant Ravitchandirane on Unsplash';
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    // trigger reveal observer on new items
+    document.querySelectorAll('.gallery-item').forEach(el => io.observe(el));
+  })
+  .catch(() => {
+    skeleton.style.display = 'none';
+    errBox.style.display   = 'block';
+  });
+
+  // lightbox close
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+    setTimeout(() => { lbImg.src = ''; }, 400);
+  }
+  lbClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+})();
+
 </body>
 </html>
